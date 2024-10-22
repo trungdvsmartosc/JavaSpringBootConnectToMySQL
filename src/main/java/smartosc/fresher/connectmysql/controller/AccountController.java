@@ -9,7 +9,6 @@ import smartosc.fresher.connectmysql.model.Account;
 import smartosc.fresher.connectmysql.service.AccountService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
