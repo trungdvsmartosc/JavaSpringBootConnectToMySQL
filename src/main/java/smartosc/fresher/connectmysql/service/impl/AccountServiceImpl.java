@@ -26,7 +26,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void deleteAccount(int id) {
+    public void deleteAccount(long id) {
         accountRepository.deleteById(id);
     }
 
@@ -35,12 +35,12 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.findAll();
     }
 
-    public Optional<Account> getAccountById(int id) {
+    public Optional<Account> getAccountById(long id) {
         return accountRepository.findById(id);
     }
 
     @Override
-    public Account updateAccount(Account account, int id) {
+    public Account updateAccount(Account account, long id) {
         final Optional<Account> oldAccount = accountRepository.findById(id);
         if(oldAccount.isEmpty()) {
             throw new EntityNotFoundException("Account with id " + id +" does not exist");
@@ -48,6 +48,13 @@ public class AccountServiceImpl implements AccountService {
 
         oldAccount.get().setUsername(account.getUsername());
         oldAccount.get().setPassword(account.getPassword());
+        oldAccount.get().setEmail(account.getEmail());
+        oldAccount.get().setAccountRole(account.getAccountRole());
         return accountRepository.save(oldAccount.get());
+    }
+
+    @Override
+    public Optional<Account> findAccountByUsernameOrEmail(String usernameOrEmail) {
+        return accountRepository.findAccountByUsernameOrEmail(usernameOrEmail);
     }
 }
