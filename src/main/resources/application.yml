@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:mysql://${HOST_NAME:localhost}:${HOST_PORT:3306}/${MYSQL_DATABASE:smartosc}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:smartosc2024}
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+      show-sql: true

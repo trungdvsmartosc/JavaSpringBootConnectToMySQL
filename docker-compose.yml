@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+
+  smartosc-rest:
+    container_name: smartosc-rest
+    image: connect-mysql-rest:1.0.0
+    environment:
+      MYSQL_USERNAME: root
+      MYSQL_DATABASE: smartosc
+      MYSQL_PASSWORD: smartosc2024
+      HOST_NAME: smartosc-db
+      HOST_PORT: 3306
+    depends_on:
+      - db
+    ports:
+      - 8080:8080
+    networks:
+      - app-network
+
+  db:
+    container_name: smartosc-db
+    image: mysql:latest
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: smartosc2024
+      MYSQL_USERNAME: root
+      MYSQL_DATABASE: smartosc
+    volumes:
+      - smartosc-db:/var/lib/backup/data
+    networks:
+      - app-network
+
+volumes:
+  smartosc-db:
+
+networks:
+  app-network:
+    driver: bridge
