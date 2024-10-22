@@ -22,6 +22,8 @@ public class Account {
 
     private String email;
 
+    private boolean status;
+
     @Enumerated(EnumType.STRING)
     private AccountRole accountRole;
 

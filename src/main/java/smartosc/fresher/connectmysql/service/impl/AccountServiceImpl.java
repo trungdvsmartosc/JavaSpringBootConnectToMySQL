@@ -30,7 +30,6 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.deleteById(id);
     }
 
-    @Override
     public List<Account> getAllAccounts() {
         return accountRepository.findAll();
     }

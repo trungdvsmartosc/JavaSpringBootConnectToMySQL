@@ -1,18 +1,17 @@
 package smartosc.fresher.connectmysql.security.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import smartosc.fresher.connectmysql.model.AccountRole;
 
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
-public class AccountDto {
+public class LoginRequest {
 
     private String username;
 
     private String password;
-
-    private AccountRole accountRole;
 }

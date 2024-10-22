@@ -13,4 +13,10 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     @Query("select c from Account c where c.username = :usernameOrEmail or c.email = :usernameOrEmail")
     Optional<Account> findAccountByUsernameOrEmail(@Param("usernameOrEmail") String usernameOrEmail);
+
+    Optional<Account> findByUsername(String username);
+
+    boolean existsByUsername(String username);
+
+    boolean existsByEmail(String email);
 }

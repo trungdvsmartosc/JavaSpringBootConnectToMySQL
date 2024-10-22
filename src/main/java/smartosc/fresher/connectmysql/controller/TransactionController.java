@@ -3,6 +3,7 @@ package smartosc.fresher.connectmysql.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import smartosc.fresher.connectmysql.model.Transaction;
 import smartosc.fresher.connectmysql.service.TransactionService;
@@ -23,6 +24,7 @@ public class TransactionController {
     }
 
     @GetMapping("/account/{id}")
+    @PreAuthorize("")
     public ResponseEntity<List<Transaction>> saveAllTransactions(@PathVariable("id") long accountId) {
         return ResponseEntity.ok(transactionService.getTransactionsByAccountId(accountId));
     }

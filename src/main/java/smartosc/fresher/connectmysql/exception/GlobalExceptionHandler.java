@@ -30,4 +30,13 @@ public class GlobalExceptionHandler {
                 ex.getMessage(),
                 Instant.now());
     }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiExceptionResponse handle(UnauthorizedException ex, WebRequest request) {
+        return new ApiExceptionResponse(
+                HttpStatus.UNAUTHORIZED.value(),
+                ex.getMessage(),
+                Instant.now());
+    }
 }
