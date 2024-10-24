@@ -15,7 +15,9 @@ public class SecurityConstants {
      */
     public static final String HEADER_STRING = "Authorization";
 
-    public static final String AUTHENTICATION_BASE_PATH = "/authentication";
+    public static final String AUTHENTICATION_BASE_PATH = "/accounts";
+
+    public static final String FORBIDDEN_MESSAGE = "403 forbidden — you don't have permission to access this resource";
 
     private SecurityConstants() {
         throw new UnsupportedOperationException();

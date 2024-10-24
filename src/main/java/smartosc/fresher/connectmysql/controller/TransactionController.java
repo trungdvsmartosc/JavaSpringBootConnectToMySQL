@@ -1,5 +1,6 @@
 package smartosc.fresher.connectmysql.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +20,13 @@ public class TransactionController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void saveAllTransactions(@RequestBody List<Transaction> transactions) {
-        transactionService.saveTransactions(transactions);
+    @PreAuthorize("hasAuthority('USER')")
+    public void saveAllTransactions(@RequestBody List<Transaction> transactions, HttpServletRequest request) {
+        transactionService.saveTransactions(transactions, request);
     }
 
     @GetMapping("/account/{id}")
-    @PreAuthorize("")
-    public ResponseEntity<List<Transaction>> saveAllTransactions(@PathVariable("id") long accountId) {
-        return ResponseEntity.ok(transactionService.getTransactionsByAccountId(accountId));
+    public ResponseEntity<List<Transaction>> getTransactionsByAccountId(@PathVariable("id") long accountId, HttpServletRequest request) {
+        return ResponseEntity.ok(transactionService.getTransactionsByAccountId(accountId, request));
     }
 }

@@ -15,7 +15,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import smartosc.fresher.connectmysql.model.AccountRole;
 import smartosc.fresher.connectmysql.security.jwt.JwtAuthenticationFilter;
-import smartosc.fresher.connectmysql.security.utils.SecurityConstants;
 
 @Configuration
 @EnableWebSecurity
@@ -24,7 +23,7 @@ import smartosc.fresher.connectmysql.security.utils.SecurityConstants;
 public class SecurityConfiguration {
 
     private static final String[] WHITE_LIST_URL = {
-            SecurityConstants.AUTHENTICATION_BASE_PATH + "/**",
+            "/accounts/register", "/accounts/login", "/accounts/refresh-token",
             "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
     };
 
@@ -40,6 +39,8 @@ public class SecurityConfiguration {
                                 .permitAll()
                                 .requestMatchers(HttpMethod.GET, pattern).hasAuthority(AccountRole.USER.name())
                                 .requestMatchers(HttpMethod.POST, pattern).hasAuthority(AccountRole.USER.name())
+                                .requestMatchers(HttpMethod.GET, "/transactions/**").hasAuthority(AccountRole.USER.name())
+//                                .requestMatchers(HttpMethod.POST, "/transactions/**").hasAuthority(AccountRole.USER.name())
                                 .requestMatchers(HttpMethod.PUT, pattern).hasAnyAuthority(AccountRole.ADMIN.name(), AccountRole.SUPER_ADMIN.name())
                                 .requestMatchers(HttpMethod.DELETE, pattern).hasAuthority(AccountRole.SUPER_ADMIN.name())
                                 .anyRequest()

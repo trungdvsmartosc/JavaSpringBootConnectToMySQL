@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 
 import java.time.Instant;
 
@@ -15,7 +14,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiExceptionResponse handle(EntityNotFoundException ex, WebRequest request) {
+    public ApiExceptionResponse handle(EntityNotFoundException ex) {
         return new ApiExceptionResponse(
                 HttpStatus.NOT_FOUND.value(),
                 ex.getMessage(),
@@ -24,7 +23,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ApiExceptionResponse handle(EntityExistsException ex, WebRequest request) {
+    public ApiExceptionResponse handle(EntityExistsException ex) {
         return new ApiExceptionResponse(
                 HttpStatus.CONFLICT.value(),
                 ex.getMessage(),
@@ -33,9 +32,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UnauthorizedException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ApiExceptionResponse handle(UnauthorizedException ex, WebRequest request) {
+    public ApiExceptionResponse handle(UnauthorizedException ex) {
         return new ApiExceptionResponse(
                 HttpStatus.UNAUTHORIZED.value(),
+                ex.getMessage(),
+                Instant.now());
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ApiExceptionResponse handle(ForbiddenException ex) {
+        return new ApiExceptionResponse(
+                HttpStatus.FORBIDDEN.value(),
                 ex.getMessage(),
                 Instant.now());
     }
