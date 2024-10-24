@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import smartosc.fresher.connectmysql.exception.UnauthorizedException;
 import smartosc.fresher.connectmysql.model.Account;
-import smartosc.fresher.connectmysql.model.AccountRole;
 import smartosc.fresher.connectmysql.repository.AccountRepository;
 import smartosc.fresher.connectmysql.repository.TokenRepository;
 import smartosc.fresher.connectmysql.security.dto.*;
@@ -44,7 +43,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         registerRequest.setPassword(bCryptPasswordEncoder.encode(registerRequest.getPassword()));
 
         final Account account = AccountMapper.INSTANCE.convertToAccount(registerRequest);
-        account.setAccountRole(AccountRole.USER);
+        account.setRole(Account.ROLE.USER);
         account.setStatus(true);
 
         accountRepository.save(account);

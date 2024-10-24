@@ -8,7 +8,6 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import smartosc.fresher.connectmysql.model.Account;
-import smartosc.fresher.connectmysql.model.AccountRole;
 
 import java.util.Date;
 import java.util.List;
@@ -31,7 +30,7 @@ public class JwtTokenManager {
         final String username = account.getUsername();
         return JWT.create()
                 .withSubject(username)
-                .withClaim("role", List.of(AccountRole.USER.name()))
+                .withClaim("role", List.of(Account.ROLE.USER))
                 .withIssuedAt(new Date())
                 .withExpiresAt(new Date(System.currentTimeMillis() + expiration))
                 .sign(Algorithm.HMAC256(jwtProperties.getSecretKey()));

@@ -25,8 +25,8 @@ public class TransactionController {
         transactionService.saveTransactions(transactions, request);
     }
 
-    @GetMapping("/account/{id}")
-    public ResponseEntity<List<Transaction>> getTransactionsByAccountId(@PathVariable("id") long accountId, HttpServletRequest request) {
-        return ResponseEntity.ok(transactionService.getTransactionsByAccountId(accountId, request));
+    @GetMapping
+    public ResponseEntity<List<Transaction>> getTransactionsByAccountId(HttpServletRequest request) {
+        return ResponseEntity.ok(transactionService.getTransactionsByAccountId(request));
     }
 }

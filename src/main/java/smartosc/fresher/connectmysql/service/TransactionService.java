@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface TransactionService {
     void saveTransactions(List<Transaction> transactions, HttpServletRequest request);
 
-    List<Transaction> getTransactionsByAccountId(long accountId, HttpServletRequest request);
+    List<Transaction> getTransactionsByAccountId(HttpServletRequest request);
 
     List<Transaction> getTransactionsByAccountId(long accountId);
 

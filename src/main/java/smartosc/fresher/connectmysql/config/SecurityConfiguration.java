@@ -13,7 +13,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import smartosc.fresher.connectmysql.model.AccountRole;
+import smartosc.fresher.connectmysql.model.Account;
 import smartosc.fresher.connectmysql.security.jwt.JwtAuthenticationFilter;
 
 @Configuration
@@ -37,12 +37,12 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(WHITE_LIST_URL)
                                 .permitAll()
-                                .requestMatchers(HttpMethod.GET, pattern).hasAuthority(AccountRole.USER.name())
-                                .requestMatchers(HttpMethod.POST, pattern).hasAuthority(AccountRole.USER.name())
-                                .requestMatchers(HttpMethod.GET, "/transactions/**").hasAuthority(AccountRole.USER.name())
-//                                .requestMatchers(HttpMethod.POST, "/transactions/**").hasAuthority(AccountRole.USER.name())
-                                .requestMatchers(HttpMethod.PUT, pattern).hasAnyAuthority(AccountRole.ADMIN.name(), AccountRole.SUPER_ADMIN.name())
-                                .requestMatchers(HttpMethod.DELETE, pattern).hasAuthority(AccountRole.SUPER_ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, pattern).hasAuthority(Account.ROLE.USER)
+                                .requestMatchers(HttpMethod.POST, pattern).hasAuthority(Account.ROLE.USER)
+                                .requestMatchers(HttpMethod.GET, "/transactions/**").hasAuthority(Account.ROLE.USER)
+//                                .requestMatchers(HttpMethod.POST, "/transactions/**").hasAuthority(Account.ROLE.USER)
+                                .requestMatchers(HttpMethod.PUT, pattern).hasAnyAuthority(Account.ROLE.ADMIN, Account.ROLE.SUPER_ADMIN)
+                                .requestMatchers(HttpMethod.DELETE, pattern).hasAuthority(Account.ROLE.SUPER_ADMIN)
                                 .anyRequest()
                                 .authenticated()
                 )

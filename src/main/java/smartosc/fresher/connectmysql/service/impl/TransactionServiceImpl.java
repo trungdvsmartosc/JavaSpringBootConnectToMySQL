@@ -5,10 +5,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import smartosc.fresher.connectmysql.exception.ForbiddenException;
 import smartosc.fresher.connectmysql.model.Transaction;
 import smartosc.fresher.connectmysql.repository.TransactionRepository;
-import smartosc.fresher.connectmysql.security.utils.SecurityConstants;
 import smartosc.fresher.connectmysql.service.HeaderService;
 import smartosc.fresher.connectmysql.service.TransactionService;
 
@@ -42,12 +40,9 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<Transaction> getTransactionsByAccountId(long accountId, HttpServletRequest request) {
+    public List<Transaction> getTransactionsByAccountId(HttpServletRequest request) {
         final var account = headerService.getAccountFromHeader(request);
-        if (account.getId() != accountId) {
-            throw new ForbiddenException(SecurityConstants.FORBIDDEN_MESSAGE);
-        }
-        return getTransactionsByAccountId(accountId);
+        return getTransactionsByAccountId(account.getId());
     }
 
     @Override

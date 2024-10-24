@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import smartosc.fresher.connectmysql.model.Account;
-import smartosc.fresher.connectmysql.model.AccountRole;
 import smartosc.fresher.connectmysql.repository.AccountRepository;
 
 import java.util.Collections;
@@ -29,8 +28,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         final String authenticatedUsername = account.getUsername();
         final String authenticatedPassword = account.getPassword();
-        final AccountRole accountRole = account.getAccountRole();
-        final SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(accountRole.name());
+        final SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(account.getRole());
 
         return new User(
                 authenticatedUsername,
