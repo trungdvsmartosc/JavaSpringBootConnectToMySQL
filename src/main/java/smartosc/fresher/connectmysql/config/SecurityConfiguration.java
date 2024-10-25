@@ -14,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import smartosc.fresher.connectmysql.model.Account;
+import smartosc.fresher.connectmysql.security.jwt.JwtAuthenticationEntryPoint;
 import smartosc.fresher.connectmysql.security.jwt.JwtAuthenticationFilter;
 
 @Configuration
@@ -23,11 +24,18 @@ import smartosc.fresher.connectmysql.security.jwt.JwtAuthenticationFilter;
 public class SecurityConfiguration {
 
     private static final String[] WHITE_LIST_URL = {
-            "/accounts/register", "/accounts/login", "/accounts/refresh-token",
-            "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
+            "/accounts/register",
+            "/accounts/login",
+            "/accounts/refresh-token",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/api/**",
     };
 
     private final JwtAuthenticationFilter jwtAuthFilter;
+    private final JwtAuthenticationEntryPoint unauthorizedHandler;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -37,15 +45,16 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(WHITE_LIST_URL)
                                 .permitAll()
-                                .requestMatchers(HttpMethod.GET, pattern).hasAuthority(Account.ROLE.USER)
-                                .requestMatchers(HttpMethod.POST, pattern).hasAuthority(Account.ROLE.USER)
+//                                .requestMatchers(HttpMethod.GET, pattern).hasAuthority(Account.ROLE.USER)
+//                                .requestMatchers(HttpMethod.POST, pattern).hasAuthority(Account.ROLE.USER)
                                 .requestMatchers(HttpMethod.GET, "/transactions/**").hasAuthority(Account.ROLE.USER)
-//                                .requestMatchers(HttpMethod.POST, "/transactions/**").hasAuthority(Account.ROLE.USER)
-                                .requestMatchers(HttpMethod.PUT, pattern).hasAnyAuthority(Account.ROLE.ADMIN, Account.ROLE.SUPER_ADMIN)
-                                .requestMatchers(HttpMethod.DELETE, pattern).hasAuthority(Account.ROLE.SUPER_ADMIN)
+////                                .requestMatchers(HttpMethod.POST, "/transactions/**").hasAuthority(Account.ROLE.USER)
+//                                .requestMatchers(HttpMethod.PUT, pattern).hasAnyAuthority(Account.ROLE.ADMIN, Account.ROLE.SUPER_ADMIN)
+//                                .requestMatchers(HttpMethod.DELETE, pattern).hasAuthority(Account.ROLE.SUPER_ADMIN)
                                 .anyRequest()
                                 .authenticated()
                 )
+                .exceptionHandling(exHandler -> exHandler.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class).build();
     }

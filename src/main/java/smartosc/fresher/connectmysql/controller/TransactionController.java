@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import smartosc.fresher.connectmysql.kafka.KafkaService;
 import smartosc.fresher.connectmysql.model.Transaction;
 import smartosc.fresher.connectmysql.service.TransactionService;
 
@@ -17,6 +18,7 @@ import java.util.List;
 public class TransactionController {
 
     private final TransactionService transactionService;
+    private final KafkaService kafkaProducerService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

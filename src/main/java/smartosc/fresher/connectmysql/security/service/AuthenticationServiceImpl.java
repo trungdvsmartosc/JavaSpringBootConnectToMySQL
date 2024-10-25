@@ -22,6 +22,7 @@ import smartosc.fresher.connectmysql.security.mapper.AccountMapper;
 import smartosc.fresher.connectmysql.security.utils.SecurityConstants;
 
 import java.io.IOException;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -64,7 +65,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         final var account = accountRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new EntityNotFoundException("Account does not exist"));
         final var jwtToken = jwtService.generateToken(account);
-        final var refreshToken = jwtService.generateRefreshToken(account);
+        final Map<String, String> claims = Map.of("role", account.getRole());
+        final var refreshToken = jwtService.generateToken(claims, account);
 
         revokeAllUserTokens(account);
 

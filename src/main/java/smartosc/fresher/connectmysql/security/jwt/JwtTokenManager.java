@@ -2,6 +2,7 @@ package smartosc.fresher.connectmysql.security.jwt;
 
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -10,7 +11,8 @@ import org.springframework.stereotype.Component;
 import smartosc.fresher.connectmysql.model.Account;
 
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -18,19 +20,20 @@ public class JwtTokenManager {
 
     private final JwtProperties jwtProperties;
 
-    public String generateRefreshToken(Account account) {
-        return buildJwtToken(account, jwtProperties.getRefreshExpirationMs());
+    public String generateToken(Map<String, String> claims, Account account) {
+        return buildJwtToken(claims, account, jwtProperties.getRefreshExpirationMs());
     }
 
     public String generateToken(Account account) {
-        return buildJwtToken(account, jwtProperties.getTokenExpirationMs());
+        return buildJwtToken(new HashMap<>(), account, jwtProperties.getTokenExpirationMs());
     }
 
-    private String buildJwtToken(Account account, long expiration) {
+    private String buildJwtToken(Map<String, String> claims, Account account, long expiration) {
         final String username = account.getUsername();
-        return JWT.create()
+        JWTCreator.Builder jwtCreator = JWT.create();
+        claims.forEach(jwtCreator::withClaim);
+        return jwtCreator
                 .withSubject(username)
-                .withClaim("role", List.of(Account.ROLE.USER))
                 .withIssuedAt(new Date())
                 .withExpiresAt(new Date(System.currentTimeMillis() + expiration))
                 .sign(Algorithm.HMAC256(jwtProperties.getSecretKey()));
