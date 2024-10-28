@@ -47,7 +47,7 @@ public class SecurityConfiguration {
                                 .permitAll()
 //                                .requestMatchers(HttpMethod.GET, pattern).hasAuthority(Account.ROLE.USER)
 //                                .requestMatchers(HttpMethod.POST, pattern).hasAuthority(Account.ROLE.USER)
-                                .requestMatchers(HttpMethod.GET, "/transactions/**").hasAuthority(Account.ROLE.USER)
+                                .requestMatchers(HttpMethod.GET, "/transactions/**").hasAnyAuthority(Account.ROLE.USER)
 ////                                .requestMatchers(HttpMethod.POST, "/transactions/**").hasAuthority(Account.ROLE.USER)
 //                                .requestMatchers(HttpMethod.PUT, pattern).hasAnyAuthority(Account.ROLE.ADMIN, Account.ROLE.SUPER_ADMIN)
 //                                .requestMatchers(HttpMethod.DELETE, pattern).hasAuthority(Account.ROLE.SUPER_ADMIN)
