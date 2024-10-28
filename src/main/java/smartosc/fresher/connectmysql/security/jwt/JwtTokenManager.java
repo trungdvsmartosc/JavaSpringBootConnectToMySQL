@@ -1,18 +1,19 @@
 package smartosc.fresher.connectmysql.security.jwt;
 
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTCreator;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import smartosc.fresher.connectmysql.model.Account;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
@@ -20,28 +21,36 @@ public class JwtTokenManager {
 
     private final JwtProperties jwtProperties;
 
-    public String generateToken(Map<String, String> claims, Account account) {
-        return buildJwtToken(claims, account, jwtProperties.getRefreshExpirationMs());
+    public String getUsernameFromToken(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
     }
 
     public String generateToken(Account account) {
-        return buildJwtToken(new HashMap<>(), account, jwtProperties.getTokenExpirationMs());
+        return generateToken(new HashMap<>(), account);
     }
 
-    private String buildJwtToken(Map<String, String> claims, Account account, long expiration) {
-        final String username = account.getUsername();
-        JWTCreator.Builder jwtCreator = JWT.create();
-        claims.forEach(jwtCreator::withClaim);
-        return jwtCreator
-                .withSubject(username)
-                .withIssuedAt(new Date())
-                .withExpiresAt(new Date(System.currentTimeMillis() + expiration))
-                .sign(Algorithm.HMAC256(jwtProperties.getSecretKey()));
+    public String generateToken(Map<String, Object> extraClaims, Account account) {
+        return buildToken(extraClaims, account, jwtProperties.getTokenExpirationMs());
     }
 
-    public String getUsernameFromToken(String token) {
-        final DecodedJWT decodedJWT = getDecodedJWT(token);
-        return decodedJWT.getSubject();
+    public String generateRefreshToken(Account account) {
+        return buildToken(new HashMap<>(), account, jwtProperties.getRefreshExpirationMs());
+    }
+
+    private String buildToken(Map<String, Object> extraClaims, Account account, long expiration) {
+        return Jwts
+                .builder()
+                .claims(extraClaims)
+                .subject(account.getUsername())
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(getSignInKey())
+                .compact();
     }
 
     public boolean validateToken(String token, String authenticatedUsername) {
@@ -52,17 +61,24 @@ public class JwtTokenManager {
     }
 
     private boolean isTokenExpired(String token) {
-        final Date expirationDateFromToken = getExpirationDateFromToken(token);
-        return expirationDateFromToken.before(new Date());
+        return extractExpiration(token).before(new Date());
     }
 
-    private Date getExpirationDateFromToken(String token) {
-        final DecodedJWT decodedJWT = getDecodedJWT(token);
-        return decodedJWT.getExpiresAt();
+    private Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
     }
 
-    private DecodedJWT getDecodedJWT(String token) {
-        final JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(jwtProperties.getSecretKey().getBytes())).build();
-        return jwtVerifier.verify(token);
+    private Claims extractAllClaims(String token) {
+        return Jwts
+                .parser()
+                .verifyWith(getSignInKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
+    private SecretKey getSignInKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.getSecretKey());
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }

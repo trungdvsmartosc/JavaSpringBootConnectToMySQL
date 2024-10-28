@@ -64,17 +64,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         );
         final var account = accountRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new EntityNotFoundException("Account does not exist"));
-        final var jwtToken = jwtService.generateToken(account);
-        final Map<String, String> claims = Map.of("role", account.getRole());
-        final var refreshToken = jwtService.generateToken(claims, account);
+        final var jwtToken = jwtService.generateRefreshToken(account);
+        final Map<String, Object> claims = Map.of("role", account.getRole());
+        final var accessToken = jwtService.generateToken(claims, account);
 
         revokeAllUserTokens(account);
 
-        saveUserToken(account, refreshToken);
+        saveUserToken(account, jwtToken);
 
         return LoginResponse.builder()
-                .accessToken(jwtToken)
-                .refreshToken(refreshToken)
+                .refreshToken(jwtToken)
+                .accessToken(accessToken)
                 .build();
     }
 
